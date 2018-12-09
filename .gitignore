@@ -9,6 +9,8 @@
 # BlueJ files
 *.ctxt
 
+target/
+
 # IntelliJ
 .idea/
 *.iml
