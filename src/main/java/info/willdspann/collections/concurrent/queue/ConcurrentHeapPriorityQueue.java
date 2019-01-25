@@ -1,43 +1,14 @@
-/*
- * Last Modified: 3/25/10
- * Prev. Modified: 12/30/09
- * J2SE Version: 5.0
- *
- * Version Notes: Changed delete(int,E) to delete(int), since the second
- *   parameter wasn't used. Also fixed it so there's no longer a check to see if
- *   'node' is 'null', since this case will never occur. Also fixed its bounds
- *   check on the 'pos' argument, so it now checks agains
- *   count.getNonreversedCount(), instead of heap.size() (which is the backing
- *   ArrayList's capacity, due to ensureCapacity(int), not the queue's size).
- *       Deprecated delete(int), because it was only needed by remove(Object),
- *   which is no longer supported. remove(Object) was unpredictable, because the
- *   Node located at "pos=indexOf(E item)" may have moved between the time 'pos'
- *   is stored and the call to delete(pos). This can result in the wrong item
- *   being deleted from the queue, where the return value of remove(Object) is
- *   not equal to its argument 'o'.
- *     v1.1: Fixed insert(E) & delete(int,E). Added deleteMin() &
- *   propagateInsert(int,E) private methods. Added draintTo(
- *   Collection<? super E>) & drainTo(Collection<? super E>,int) public methods,
- *   implementing these 2 methods from the BlockingQueue interface. Implemented
- *   the Collection interface's optional retainAll(Collection<?>) method.
- *     v1.0.1: Fixed a number of errors, during the course of single-threaded
- *   JUnit testing.
- * 
- * TODO: JUnit test this class for memory leaks, and then performance.
- */
-
-
 package info.willdspann.collections.concurrent.queue;
 
-import java.util.*;  // Iterator, Comparator, NoSuchElementException
-import java.util.concurrent.locks.*;  // ReentrantLock, ReentrantReadWriteLock
+import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.ThreadSafe;
 
 import info.willdspann.collections.utils.HeapBitReversedCounter;
-
 
 /**
  * A thread-safe priority queue, which uses node-level locking. A
@@ -177,94 +148,13 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
      * @throws NullPointerException if {@code o} is {@code null}.
      */
     /*
-     * Version Notes: The method is no longer supported, because it can't be
-     *   implemented correctly without introducing deadlock. It would need to
-     *   call a deleteNode(Node<E> n, int pos) method, which would delete a
-     *   given Node, while holding the 'n' Node's lock.
-     *     v1.0.2: Added a catch block for IndexOutOfBoundsException, for the
-     *   call to delete(int,E), since this method now throws this exception if
-     *   'pos' is >= size().
+     * NOTE: The method is no longer supported, because it can't be implemented correctly without introducing deadlock.
+     *   It would need to call a deleteNode(Node<E> n, int pos) method, which would delete a given Node, while holding
+     *   the 'n' Node's lock.
      */
     public boolean remove(Object o) {
     	throw new UnsupportedOperationException();
     }
-    
-    
-    /*
-     * Version: 1.0.2
-     */
-//    @SuppressWarnings("unchecked")
-//    public boolean remove(Object o) {
-//    	// Check validity of argument:
-//    	if (o == null)
-//    		throw new NullPointerException();
-//    	
-//    	/* Throws ClassCastException if the type of 'o' is incompatible with
-//    	 * this queue. */
-//    	E toDelete = (E) o;  // Unchecked cast
-//    	
-//    	E deleted = null;
-//    	int pos;
-//    	/* Recalculate 'pos' & retry delete, if data of node at 'pos'
-//    	 * doesn't equal 'o'. This can occur due to concurrent inserts
-//    	 * and/or deletes causing nodes to change position in the min-heap's
-//    	 * backing array. */
-//    	do {
-//    		pos = indexOf(o);
-//    		try {
-//    			if (pos >= 0)
-//    				deleted = delete(pos, toDelete);
-//    			else
-//    				break;
-//    		} catch (NoSuchElementException ne) {
-//    			continue;
-//    		} catch (IndexOutOfBoundsException ie) {
-//    			continue;
-//    		}
-//    	} while (pos >= 0 && deleted == null);
-//    	
-//    	if (pos >= 0)
-//    		return true;
-//    	else
-//    		return false;
-//    }
-    
-    
-    /* Version: 1.0.1 */
-//    @SuppressWarnings("unchecked")
-//    public boolean remove(Object o) {
-//    	// Check validity of argument:
-//    	if (o == null)
-//    		throw new NullPointerException();
-//    	
-//    	/* Throws ClassCastException if the type of 'o' is incompatible with
-//    	 * this queue. */
-//    	E toDelete = (E) o;  // Unchecked cast
-//    	
-//    	E deleted = null;
-//    	int pos;
-//    	/* Recalculate 'pos' & retry delete, if data of node at 'pos'
-//    	 * doesn't equal 'o'. This can occur due to concurrent inserts
-//    	 * and/or deletes causing nodes to change position in the min-heap's
-//    	 * backing array. */
-//    	do {
-//    		pos = indexOf(o);
-//    		try {
-//    			if (pos >= 0)
-//    				deleted = delete(pos, toDelete);
-//    			else
-//    				break;
-//    		} catch (NoSuchElementException e) {
-//    			continue;
-//    		}
-//    	} while (pos >= 0 && deleted == null);
-//    	
-//    	if (pos >= 0)
-//    		return true;
-//    	else
-//    		return false;
-//    }
-    
     
     /**
      * Removes all of this queue's elements that are also contained in the
@@ -284,36 +174,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     public boolean removeAll(Collection<?> c) {
     	throw new UnsupportedOperationException();
     }
-    
-    
-    /*
-     * Version: 1.0
-     */
-//    public boolean removeAll(Collection<?> c) {
-//    	if (c == null)
-//    		throw new NullPointerException();
-//    	
-//    	boolean changed = false;
-//    	for (Object o : c)
-//    		changed |= remove(o);
-//    	return changed;
-//    }
-    
-    
-    /*
-     * Version: 2.0
-     */
-//    public boolean retainAll(Collection<?> c) {
-//    	if (c == null)
-//    		throw new NullPointerException();
-//    	
-//    	boolean changed = false;
-//    	for (E item : this) {
-//    		if (!c.contains(item))
-//    			changed |= remove(item);
-//    	}
-//    	return changed;
-//    }
     
     /**
      * Version: 1.0
@@ -425,14 +285,9 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
      * Version: 2.0
      */
     public boolean isEmpty() {
-    	return this.heap.get(0).getTag() == Tag.EMPTY;
+		return privPeek() == null;
     }
-    
-    /* Version: 1.0 */
-//    public boolean isEmpty() {
-//    	return size() == 0;
-//    }
-    
+
     
     private void privOffer(E item) {
     	if (item == null)
@@ -442,8 +297,7 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		
     	insert(item);
     }
-    
-    
+
     private E privPeek() {
     	Node<E> root = this.heap.get(0);
     	root.lock.lock();
@@ -456,7 +310,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		root.lock.unlock();
     	}
     }
-    
     
     /**
      * Returns the position of the specified item in the min-heap's backing
@@ -494,7 +347,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     	}
     	return -1;  // Indicate 'o' wasn't found
     }
-    
     
     /**
 	 * Version: 1.2
@@ -559,101 +411,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     	}
     }
     
-    
-	/* Version: 1.1.2 */
-//    private void insert(E item) {
-//    	// Get our current Thread's ID, which is used in 
-//    	long threadID = Thread.currentThread().getId();
-//		Node<E> node,    // Node being inserted w/ its data equal to 'item'
-//				parent;  // 'node's parent Node  
-//		int nodePos,    // 'node's pos. in the heap
-//			 parentPos;  // 'parent's pos. 
-//    	this.countLock.writeLock().lock();
-//    	try {
-//    		// Get the next leaf insert pos. from the bit-reversed counter
-//    		nodePos = this.count.getAndIncrement();
-//    		// Ensure sufficient heap capacity
-//    		ensureCapacity(nodePos + 1);
-//    		// Get 'node' from 'nodePos', which may be 'null' or Tag.EMPTY:
-//    		node = this.heap.get(nodePos);
-//    		
-////    		try {
-////    			node = this.heap.get(nodePos);
-////    		} catch (IndexOutOfBoundsException iobe) {
-////    			node = null;
-////    		}
-//    		
-//    		// If 'node' is 'null', create new Node & put in the heap
-//    		if (node == null) {
-//    			node = new Node<E>();
-////    			this.heap.ensureCapacity(nodePos + 1);
-//    			this.heap.set(nodePos, node); 
-//    		}
-//    		node.lock.lock();
-//    	} finally {
-//    		this.countLock.writeLock().unlock();
-//    	}
-//		try {
-//			// Set 'node's data to the inserting 'item'
-//			node.setData(item);
-//			// Set its Tag to current Thread's ID
-//	    	node.setTag(Tag.newThreadIDTag(threadID));
-//		} finally {
-//			node.lock.unlock();
-//		}
-//    		
-//		// Move 'node' towards heap's root while smaller than its parent
-//    	while (nodePos > 0) {
-//    		// Calc. 'node's parent's pos.
-//    		parentPos = (nodePos - 1) >>> 1;  // (nodePos-1)/2
-//    		// Get 'node's parent from heap
-//    		parent = this.heap.get(parentPos);
-//    		parent.lock.lock();
-//    		node.lock.lock();
-//    		try {
-//        		if (parent.getTag() == Tag.AVAILABLE
-//        				&& node.getTag().getValue() == threadID)
-//        		{
-//        			// If 'node' is less than 'parent', swap nodes
-//        			if (compare(node, parent) < 0) {
-//        				swapNodes(nodePos, parentPos);
-//        				nodePos = parentPos;
-//        			}
-//        			// Otherwise, we're done.
-//        			else {
-//        				node.setTag(Tag.AVAILABLE);
-//        				// Changed from "continue", to prevent infinite loop
-//        				break;
-//        			}
-//        		}
-//        		// Concurrent delete
-//        		else if (parent.getTag() == Tag.EMPTY) {
-//        			// Changed for clarity
-//        			break;
-//        		}
-//        		// Concurrent insert swapped 'node' w/ 'parent'
-//        		else if (node.getTag().getValue() != threadID) {
-//        			nodePos = parentPos;
-//        		}
-//    		} finally {
-//    			node.lock.unlock();
-//    			parent.lock.unlock();
-//    		}
-//    	}
-//    	// If 'node' is now root, set its Tag to Tag.AVAILABLE:
-//    	if (nodePos == 0) {
-//    		Node<E> root = this.heap.get(0);
-//    		root.lock.lock();
-//    		try {
-//        		if (root.getTag().getValue() == threadID)
-//        			root.setTag(Tag.AVAILABLE);
-//    		} finally {
-//    			root.lock.unlock();
-//    		}
-//    	}
-//    }
-    
-    
     /**
      * Removes and returns the minimum item in this queue.
      * <p>
@@ -669,20 +426,7 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		return null;
     	}
     }
-    
-    
-    /*
-     * Version: 2.1
-     */
-//    private E delete() {
-//    	try {
-//    		return delete(0, null);
-//    	} catch (NoSuchElementException e) {
-//    		return null;
-//    	}
-//    }
-    
-    
+
     /**
      * Removes and returns the item at the given position, in the backing
      * array-based min-heap. This is a generalized version of the prior
@@ -710,44 +454,8 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
      * @throws IndexOutOfBoundsException if {@code pos} is greater than or equal
      *    to the queue's size.
      */
-    /*
-     * NOTE: This method is now deprecated, because it was only needed by
-     *   remove(Object), which is no longer supported, becuase it was
-     *   upredictable.
-     * 
-     * Version Notes: Removed the 'item' parameter, which was no longer used.
-     *   Removed the check if 'node' equals 'null', because this case will never
-     *   occur, since if 'count' had been incremented to 'pos' then there must
-     *   be a Node object at 'pos'. (Nodes are never removed. They're just
-     *   marked empty.) Changed the bounds check on 'pos' so it is compared to
-     *   count.getNonreversedCount() instead of heap.size(), since this is the
-     *   backing ArrayList's current capacity not the queue's size.
-     *       Deprecated this method, since it was only needed by remove(Object),
-     *   which is no longer supported, because it was unpredictable.
-     *     v2.0: Rewrote this method based on the new deleteMin() method,
-     *   which is closely based on Galen C. Hunt's concurrent_delete() pseudo-
-     *   code method.
-     *     v1.4.2: Fixes a bug where the 'countLock' was not released
-     *   when this method was called on an empty queue, because a
-     *   NoSuchElementException is thrown in this case, and this exception was
-     *   thrown outside a try-finally block, without calling unlock() on the
-     *   'countLock' first. This version adds a new try-finally block starting
-     *   immediately after the 'countLock' is acquired and ending
-     *   at the end of the method, where the 'countLock' is now guaranteed to
-     *   always be released in this new finally block, in case of an uncaught
-     *   exception.
-     *     v1.4.1: This version now unlocks the 'countLock'
-     *   write-lock, if we still hold it, in the finally block. This was
-     *   added for the case where an {@code Exception} is thrown.
-     *     v1.4: This version acquires node locks in the order 'node', then
-     *   'bottom'. If pos != bottomPos, it doesn't release 'countLock' until
-     *   both 'node' & 'bottom' Nodes' locks have been acquired. If,
-     *   however, pos == bottomPos, it releases countLock after 'node' lock
-     *   is acquired. In either case, the 'node' lock is not released until
-     *   the method returns.
-     *       Also, this version sets the bottom Node's data to 'null' after
-     *   setting its tag to Tag.EMPTY.
-     */
+    /* NOTE: This method is now deprecated, because it was only needed by remove(Object), which is no longer supported,
+     *   because it was unpredictable. */
     @Deprecated
     private E delete(int pos) {
     	Node<E> bottom, node;
@@ -803,234 +511,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     			node.lock.unlock();
     	}
     }
-    
-    
-    /**
-     * Removes and returns the item at the given position, in the backing
-     * array-based min-heap. This is a generalized version of the prior
-     * delete() method, which supports deletion of any item in the queue.
-     * The optional {@code item} parameter specifies the item to be deleted,
-     * and if specified is used to make sure the position given by
-     * {@code pos} is correct.
-     * <p>
-     * Version: 2.0
-     * <p>
-     * <u>Notes on Locking</u>: The 'countLock' is released as soon as we've
-     * acquired the 'bottom' lock, or immediately if the queue's size is found
-     * to be 0. Then the 'bottom' lock is released as soon we've copied its data
-     * and set it to EMPTY. Then the 'node' lock at position 'pos' is acquired.
-     * The 'node' lock is released immediately if 'node' is tagged EMPTY and
-     * thereby is the sole Node (and equal to 'bottom'). In this case,
-     * 'bottomData' is returned. Otherwise, the 'node' lock is held until the
-     * method returns, or an exception is thrown.
-     * 
-     * @param pos index of item to be deleted, in the backing array-based
-     *    min-heap.
-     * @param item the item to be deleted, for verifying {@code pos} is
-     *    correct; or {@code null} if this check is not necessary. 
-     * @return the deleted item, which was at position {@code pos}, in the
-     *    backing array-based min-heap.
-     * @throws NoSuchElementException if the queue is empty.
-     * @throws IndexOutOfBoundsException if {@code pos} is greater than or equal
-     *    to the queue's size.
-     */
-//    private E delete(int pos, E item) {
-//    	if (pos >= this.heap.size())
-//    		throw new IndexOutOfBoundsException();
-//    	
-//    	Node<E> bottom, node;
-//    	E bottomData, nodeData;
-//    	int bottomPos;
-//    	
-//    	/* Grab an item from the bottom of the heap to replace the to-be-deleted
-//    	 * item at 'pos'. */
-//    	this.countLock.writeLock().lock();
-//    	try {
-//	    	int size = this.count.getNonreversedCount();
-//	    	if (size == 0) {
-//	    		this.countLock.writeLock().unlock();
-//	    		throw new NoSuchElementException();
-//	    	}
-//	    	bottomPos = this.count.decrementAndGet();
-//	    	bottom = this.heap.get(bottomPos);
-//	    	bottom.lock.lock();
-//    	} finally {
-//    		if (this.countLock.writeLock().isHeldByCurrentThread())
-//    			this.countLock.writeLock().unlock();
-//    	}
-//    	
-//    	// Get 'bottom' data & set the Node empty, then release its lock:
-//    	bottomData = bottom.getData();
-//    	bottom.setTag(Tag.EMPTY);
-//    	bottom.setData(null);
-//    	bottom.lock.unlock();
-//    	
-//    	// Lock item at 'pos':
-//    	node = this.heap.get(pos);
-//    	// If 'node' is null, then 'pos' is no longer valid, due to a concurrent
-//    	//   deletion.
-//    	if (node == null) {
-//    		// FIXME: Without reinserting 'bottomData', it will disappear from
-//    		//   the queue & 'count' is decremented, although we're returning
-//    		//   'null' to indicate we didn't change the queue (inconsistent).
-//    		insert(bottomData); // Undo 'bottom' removal.
-//    		return null;
-//    	}
-//    	node.lock.lock();
-//    	try {
-//    		// Stop if it was only item in the heap (and thereby was 'bottom')
-//    		if (node.getTag() == Tag.EMPTY) {
-//    			node.lock.unlock();
-//    			return bottomData;
-//    		}
-//    		// Replace node's item with the item that was in 'bottom':
-//    		nodeData = node.getData();
-//    		node.setData(bottomData);
-//    		node.setTag(Tag.AVAILABLE);
-//    		// Adjust heap starting at 'pos', while holding the lock on 'node'.
-//    		heapify(pos, node);
-//    		// Return deleted item
-//    		return nodeData;
-//    	} finally {
-//    		if (node.lock.isHeldByCurrentThread())
-//    			node.lock.unlock();
-//    	}
-//    }
-    
-    
-    /*
-     * Version: 1.4.2
-     */
-//    private E delete(int pos, E item) {
-//    	if (pos >= this.heap.size())
-//    		throw new IndexOutOfBoundsException();
-//    	
-//    	Node<E> bottom, node;
-//    	E bottomData, nodeData;
-//    	int bottomPos;
-//    	
-//    	this.countLock.writeLock().lock();
-//    	try {
-//	    	int size = this.count.getNonreversedCount();
-//	    	if (size == 0) {
-//	    		this.countLock.writeLock().unlock();
-//	    		throw new NoSuchElementException();
-//	    	}
-//	    	bottomPos = this.count.decrementAndGet();
-//	    	node = this.heap.get(pos);
-//	    	node.lock.lock();
-//	
-//	    	try {
-//	    		// Verify 'pos' is correct, if 'item' is non-null:
-//	    		if (item != null && !node.getData().equals(item)) {
-//	    			this.count.incrementAndGet(); // Undo decrement
-//	    			this.countLock.writeLock().unlock();
-//	    			return null;
-//	    		}
-//	    		
-//	    		// If 'pos' is the last item:
-//	    		if (pos == bottomPos) {
-//	    			this.countLock.writeLock().unlock();
-//	    			// If 'node' is empty, return 'null'. The queue is empty.
-//	    			if (node.getTag() == Tag.EMPTY)
-//	    				return null;
-//	    			nodeData = node.getData();
-//	    			node.setTag(Tag.EMPTY);
-//	    			node.setData(null);
-//	    			return nodeData;
-//	    		}
-//	    		else {
-//	    			bottom = this.heap.get(bottomPos);
-//	    			bottom.lock.lock();
-//	    			try {
-//	    				this.countLock.writeLock().unlock();
-//	    				bottomData = bottom.getData();
-//	    				bottom.setTag(Tag.EMPTY);
-//	    				bottom.setData(null);
-//	    			} finally {
-//	    				bottom.lock.unlock();
-//	    			}
-//	    			nodeData = node.getData();
-//	    			node.setData(bottomData);
-//	    			node.setTag(Tag.AVAILABLE);
-//	    			// Heapify 'node'
-//	    			heapify(pos, node);
-//	    			return nodeData;
-//	    		}
-//	    	} finally {
-//	    		node.lock.unlock();
-//	    	}
-//    	} finally {
-//    		// Unlock 'countLock' if we still hold it (in case of Exception)
-//    		if (this.countLock.writeLock().isHeldByCurrentThread())
-//    			this.countLock.writeLock().unlock();
-//    	}
-//    }
-    
-    
-    /**
-     * Removes the minimum-priority item from the queue and returns this item.
-     * <p>
-     * Impl. Notes: This method is based on v1.4.2 of my {@code delete(int,E)}
-     * method.
-     * 
-     * @return the removed minimum-priority item.
-     * @throws NoSuchElementException if the queue is empty.
-     */
-//    private E deleteMin2() {
-//    	Node<E> root;
-//    	E rootData;
-//    	int bottomPos;
-//    	
-//    	this.countLock.writeLock().lock();
-//    	try {
-//    		int size = this.count.getNonreversedCount();
-//	    	if (size == 0) {
-//	    		this.countLock.writeLock().unlock();
-//	    		throw new NoSuchElementException();
-//	    	}
-//	    	bottomPos = this.count.decrementAndGet();
-//	    	root = this.heap.get(0);
-//	    	root.lock.lock();
-//	    	try {
-//	    		// If 'bottomPos' is root (queue has size 1):
-//	    		if (bottomPos == 0) {
-//		    		this.countLock.writeLock().unlock();
-//	    			// If 'root' is empty, return 'null'. The queue is empty.
-//	    			if (root.getTag() == Tag.EMPTY)
-//	    				return null;
-//	    			rootData = root.getData();
-//	    			root.setTag(Tag.EMPTY);
-//	    			root.setData(null);
-//	    		}
-//	    		else {
-//	    			E bottomData;
-//	    			Node<E> bottom = this.heap.get(bottomPos);
-//	    			bottom.lock.lock();
-//	    			try {
-//	    				this.countLock.writeLock().unlock();
-//	    				bottomData = bottom.getData();
-//	    				bottom.setTag(Tag.EMPTY);
-//	    				bottom.setData(null);
-//	    			} finally {
-//	    				bottom.lock.unlock();
-//	    			}
-//	    			rootData = root.getData();
-//	    			root.setData(bottomData);
-//	    			root.setTag(Tag.AVAILABLE);
-//	    			// Heapify 'root'
-//	    			heapify(0, root);
-//	    		}
-//	    		return rootData;
-//	    	} finally {
-//	    		root.lock.unlock();
-//	    	}
-//    	} finally {
-//    		if (this.countLock.writeLock().isHeldByCurrentThread())
-//    			this.countLock.writeLock().unlock();
-//    	}
-//    }
-    
     
     /**
      * Removes the minimum-priority item from the queue and returns this item.
@@ -1094,7 +574,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     			root.lock.unlock();
     	}
     }
-    
     
     /**
      * Heapify the specified {@code Node}.
@@ -1189,8 +668,7 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
 			}
 		}
     }
-    
-    
+
     /**
      * Propagates the specified newly inserted {@code Node} up the backing heap
      * towards its root node via successive node swaps, while its data is
@@ -1252,8 +730,7 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     	}
     	return nodePos;
     }
-    
-    
+
     /**
      * Swaps the nodes at the specified positions.
      * <p>
@@ -1274,8 +751,7 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     	this.heap.set(node1pos, this.heap.get(node2pos));
     	this.heap.set(node2pos, temp);
     }
-    
-    
+
     /**
      * Increases the backing {@code ArrayList}'s capacity, if
      * {@code minCapacity} is greater than its current capacity, and adds
@@ -1288,10 +764,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
      *    method with a value less than or equal to {@code heap.size()} has no
      *    effect.
      */
-    /*
-     * Version Notes: Fixed the loop's condition, so that minCapacity-1 is
-     *   included in the positions set to 'null'.
-     */
     @GuardedBy("this.countLock")
     private void ensureCapacity(int minCapacity) {
     	this.heap.ensureCapacity(minCapacity);
@@ -1299,20 +771,7 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     	for (int i = this.heap.size(); i < minCapacity; i++)
     		this.heap.add(null);
     }
-    
-    
-    /*
-     * Version: 1.0
-     */
-//    @GuardedBy("this.countLock")
-//    private void ensureCapacity(int minCapacity) {
-//    	this.heap.ensureCapacity(minCapacity);
-//    	// Fill with 'null's, increasing size to capacity.
-//    	for (int i = this.heap.size(); i < minCapacity - 1; i++)
-//    		this.heap.add(null);
-//    }
-    
-    
+
     /**
      * Compares two {@code Node}s' data, using a {@code Comparator}'s
      * {@code compare(E,E)} if one is set, or {@code Comparable}'s
@@ -1339,9 +798,8 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     	else
     		return ((Comparable<E>) item1.data).compareTo(item2.data); // unchecked cast
     }
-    
-    
-    
+
+
     /**
      * Version: 1.1
      */
@@ -1350,22 +808,19 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     	
     	private E data;
     	private Tag tag;
-    	
-    	
+
     	private Node() {
     		this.data = null;
     		this.tag = Tag.EMPTY;
     		this.lock = new ReentrantLock(true);  // Create a "fair" Lock
     	}
-    	
-    	
+
     	E getData() {
     		// Calling Thread should hold the Lock
     		assert this.lock.isHeldByCurrentThread();
     		
     		return this.data;
     	}
-    	
     	
     	void setData(E data) {
     		// Calling Thread should hold the Lock
@@ -1374,14 +829,12 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		this.data = data;
     	}
     	
-    	
     	Tag getTag() {
     		// Calling Thread should hold the Lock
     		assert this.lock.isHeldByCurrentThread();
     		
     		return this.tag;
     	}
-    	
     	
     	void setTag(Tag tag) {
     		// Calling Thread should hold the Lock
@@ -1411,8 +864,7 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     	private List<E> buf; // Snapshot of queue's items
     	private List<Integer> curRow, prevRow; // Lists of buffered Node indexes
     	private int curRowCap; // Heap max. capacity of current row
-    	
-    	
+
     	private SnapshotCreator() {
     		this.bufCount = HeapBitReversedCounter.newInstance();
     		this.buf = new LinkedList<E>();
@@ -1423,12 +875,10 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		readSnapshot();
     	}
     	
-    	
     	List<E> getList() {
     		return this.buf;
     	}
-    	
-    	
+
     	/**
     	 * Version: 1.0.1
     	 */
@@ -1462,7 +912,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
 						.unlock();
 			}
     	}
-    	
     	
     	/**
     	 * <p>
@@ -1510,8 +959,7 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		return this.curRow.size();
     	}
     }
-    
-    
+
     
     /**
      * An {@code Iterator} over the elements in this queue. The
@@ -1534,19 +982,16 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     private class Iter implements Iterator<E> {
     	private List<E> buf;  // Snapshot of queue's items
     	private int iterIndex;
-    	
-    	
+
     	private Iter() {
     		this.buf = new SnapshotCreator().getList();
     		this.iterIndex = 0;
     	}
     	
-    	
     	public boolean hasNext() {
     		return this.iterIndex < this.buf.size();
     	}
-    	
-    	
+
     	public E next() {
     		if (this.iterIndex < this.buf.size()) {
     			return this.buf.get(this.iterIndex++);
@@ -1554,7 +999,6 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		else
     			throw new NoSuchElementException();
     	}
-    	
     	
     	/**
     	 * @throws UnsupportedOperationException because this operation is
@@ -1564,23 +1008,18 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		throw new UnsupportedOperationException();
     	}
     }
-    
-    
+
     
 	@Immutable
     private static class Tag {
-		/**  **/
     	static Tag EMPTY = new Tag(0L);
-		/**  **/
     	static Tag AVAILABLE = new Tag(-1L);
-    	
+
     	private final long val;
-    	
-    	
+
     	private Tag(long value) {
     		this.val = value;
     	}
-    	
     	
     	static Tag newThreadIDTag(long id) {
     		if (id < 1L)
@@ -1589,12 +1028,10 @@ public class ConcurrentHeapPriorityQueue<E> implements Queue<E> {
     		return new Tag(id);
     	}
     	
-    	
     	long getValue() {
     		return this.val;
     	}
-    	
-    	
+
     	boolean isThreadIDTag() {
     		return this.val > 0L;
     	}
