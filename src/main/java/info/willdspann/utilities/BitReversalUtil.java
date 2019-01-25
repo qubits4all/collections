@@ -1,114 +1,44 @@
-/*
- * Last Modified: 7/17/08
- * Prev. Modified: 7/14/08
- * J2SE Version: 5.0
- * 
- * Version Notes: Added new bitReversedIncrement(int) &
- *   bitReversedIncrement(long) bit-reversed increment methods, which use
- *   the maximum virtual bit-width for a counter, which is Integer.SIZE - 1
- *   or Long.SIZE - 1 respectively. Similarly added new
- *   bitReversedDecrement(int) & bitReversedDecrement(long) methods. Also,
- *   added a private no-argument constructor to enforce this utility class's
- *   noninstantiability.
- *     v2.0.1: Fixed a bug in bitReversedIncrement(int,int),
- *   bitReversedIncrement(long,int), bitReversedDecrement(int,int) &
- *   bitReversedDecrement(long,int), in which the wrong value was returned
- *   when a bit-width of 1 was specified, due to the post-increment operator
- *   being used where the pre-increment operator was needed.
- *     v2.0: Added new methods bitReversedIncrement(int,int),
- *   bitReversedIncrement(long,int), bitReversedDecrement(int,int) &
- *   bitReversedDecrement(long,int), which return the bit-reversed increment
- *   or decrement, respectively, of the specified bit-reversed value, using
- *   the given virtual bit-width. These new methods are a generalization of
- *   the technique used by the BitReversedCounter & BitReversedLongCounter
- *   classes' protected increment() & decrement() methods, as they were
- *   implemented in versions 2.2 of these classes.
- *     v1.4.1: Fixed a bug in reverseBits(int,int) &
- *   reverseBits(long,int), where a validity check on the int or long
- *   argument 'i' or 'n', respectively, was not dealing with negative values
- *   correctly.
- *     v1.4: Added the reverseBits_HSWarrenJr(int) &
- *   reverseBits_HSWarrenJr(long) methods, which are more efficient versions
- *   of the reverseBits(int) & reverseBits(long) methods respectively, that
- *   will replace them once these new methods have been unit tested. Updated
- *   the impl. of reverseBits(byte) & reverseBits(short), to use more
- *   readable, shorter bit masks without explicit leading zeros. Added
- *   comments that explain the operation performed by each functional line
- *   of the reverseBits(byte), reverseBits(short), reverseBits(int) &
- *   reverseBits(long) methods. 
- *     v1.3.1: Made minor simplifications to impl. of
- *   reverseBits(int,int) & reverseBits(long,int).
- *     v1.3: Modified reverseBits(int,int) & reverseBits(long,int), so
- *   that they now allow their 'bitWidth' parameter to be in the range
- *   [1,32] or [1,64], respectively. In addition, these methods now throw an
- *   IllegalArgumentException if "i >= 2^bitWidth && i < 32" or
- *   "n >= 2^bitWidth && n < 64", respectively. Previously, if i or n was in
- *   this range, the results were documented as undefined. Now these values
- *   are simply not allowed.
- *     v1.2: Added reverseBits(int,int) & reverseBits(long,int), which
- *   adds the ability to peform bit reversal on virtual bit-sized integers,
- *   such as 4-bit or 31-bit integers for the former, or 63-bit integers
- *   for the latter. This new functionality makes it possible now to create
- *   bit-reversed int & long counters where their maximum count is
- *   Integer.MAX_VALUE and Long.MAX_VALUE, respectively. Previously, an
- *   int-based bit-reversed counter was limited to a maximum of 2^16-1 & a
- *   long-based one was limited to 2^32-1.
- *       Also, changed name of class from BitReversalUtilities to
- *   BitReversalUtil.
- *     v1.1: Added reverseBits(long). Rewrote reverseBits(byte) &
- *   reverseBits(short), so that they now perform all computations using
- *   the 32-bit 'int' type. Also, they now correctly perform each
- *   successive step using the previous step's result. The previous version
- *   incorrectly used the original byte or short passed to the method, in
- *   each step's computation.
- *       Rewrote reverseBits_Vecerina(byte) similarly, which should make
- *   it ready for correctness testing.
- * 
- * Testing Notes: Compare performance of reverseBits(int) &
- *   reverseBits(long) against reverseBits_HSWarrenJr(int) &
- *   reverseBits_HSWarrenJr(long).
- *   
- * TODO: JUnit test this class.
- */
-
 package info.willdspann.utilities;
 
 /**
- * This noninstantiable utility class provides a collection of static
- * methods for reversing the order of bits in an integer. There are methods
- * that perform this operation on {@code byte}, {@code short}, {@code int},
- * and {@code long} integers. Methods that perform a bit-reversed increment
- * or decrement, of a specified int or long integer, and with a specified
- * virtual bit-width, are also provided.
+ * <p>
+ * This utility class provides a static methods for reversing the order of bits in an integer, plus support for
+ * performing bit-reversed increment and decrement operations.</p>
+ * <p>
+ * Support for custom virtual "bit-widths" is also provided, allowing for bit-reversed increment of a 4-bit wide
+ * bit-reversed counter, for example.
  *
- * @author <A HREF="mailto:willdspann@yahoo.com">Will D. Spann</A>
+ * @author Will D. Spann
  * @version 2.1
  */
 public final class BitReversalUtil {
 	private static final int INT_WIDTH = 32;   // Width of an int in bits
 	private static final int LONG_WIDTH = 64;  // Width of a long in bits
-	
-	
+
 	/**
-	 * Ensure noninstantiability.
+	 * Ensure uninstantiability.
 	 */
 	private BitReversalUtil() { }
-	
-	
+
 	/**
+	 * <p>
 	 * Returns a copy of the given {@code byte} with its bits in the
-	 * reverse order.
+	 * reverse order.</p>
 	 * <p>
-	 * Version: 1.1.1
+	 * Based on code by: <a href="mailto:Dan.Pop@ifh.de">Dan Pop</a><br>
+	 * Posted on The Scripts Forum:
+	 * <a href="http://www.thescripts.com/forum/thread214890.html">
+	 * http://www.thescripts.com/forum/thread214890.html</a> on 11/13/05.
 	 * <p>
-	 * Impl. Notes: The assignment statements can be executed in any order.
+	 * Version: 1.1.1</p>
+	 * <p>
+	 * Impl. Notes: The assignment statements can be executed in any order.</p>
 	 * 
 	 * @param b {@code byte} to have its reverse bit-order {@code byte}
 	 *    calculated.
 	 * @return a copy of the given {@code byte} with its bits in the
 	 *    reverse order.
 	 */
-	/* TODO: Test w/ JUnit. */
 	public static byte reverseBits(byte b) {
 		int res = (int) b;
 		// Swap adjacent 4-bit fields (nibbles)
@@ -120,44 +50,6 @@ public final class BitReversalUtil {
 		
 		return (byte) res;
 	}
-	
-
-	/**
-	 * Returns a copy of the given {@code byte} with its bits in the
-	 * reverse order.
-	 * <p>
-	 * Based on code by: <a href="mailto:Dan.Pop@ifh.de">Dan Pop</a><br>
-	 * Posted on The Scripts Forum:
-	 * <a href="http://www.thescripts.com/forum/thread214890.html">
-	 * http://www.thescripts.com/forum/thread214890.html</a> on 11/13/05.
-	 * <p>
-	 * Notes: N is the number of bits, which in this implemenation is 8.
-	 * <p>
-	 * Author's Notes on Algorithm: For larger values of [N] that are  
-	 *   powers of two, an adaptation of the following algorithm is much
-	 *   better than the bit by bit approach. For a 16-bit byte you only
-	 *   need one more "iteration", which is left as an exercise to the
-	 *   reader.
-	 * <p>
-	 * Version: 1.1
-	 * 
-	 * @param b {@code byte} to have its reverse bit-order {@code byte}
-	 *    calculated.
-	 * @return a copy of the given {@code byte} with its bits in the
-	 *    reverse order.
-	 */
-//	public static byte reverseBits(byte b) {
-//		int res = (int) b;
-//		// Swap adjacent 4-bit fields (nibbles)
-//		res = (res & 0x0000000F) << 4 | (res & 0x000000F0) >>> 4;
-//		// Swap adjacent 2-bit fields
-//		res = (res & 0x00000033) << 2 | (res & 0x000000CC) >>> 2;
-//		// Swap adjacent bits
-//		res = (res & 0x00000055) << 1 | (res & 0x000000AA) >>> 1;
-//		
-//		return (byte) res;
-//	}
-	
 	
 	/**
 	 * Returns a copy of the given {@code short} with its bits in the
@@ -172,7 +64,6 @@ public final class BitReversalUtil {
 	 * @return a copy of the given {@code short} with its bits in the
 	 *    reverse order.
 	 */
-	/* TODO: Test w/ JUnit. */
 	public static short reverseBits(short s) {
 		int res = (int) s;
 		// Swap adjacent bytes
@@ -186,33 +77,6 @@ public final class BitReversalUtil {
 		
 		return (short) res;
 	}
-	
-	
-	/**
-	 * Returns a copy of the given {@code short} with its bits in the
-	 * reverse order.
-	 * <p>
-	 * Version: 1.1
-	 * 
-	 * @param s {@code short} to have its reverse bit-order {@code short}
-	 *    calculated.
-	 * @return a copy of the given {@code short} with its bits in the
-	 *    reverse order.
-	 */
-//	public static short reverseBits(short s) {
-//		int res = (int) s;
-//		// Swap adjacent bytes
-//		res = (res & 0x000000FF) << 8 | (res & 0x0000FF00) >>> 8;
-//		// Swap adjacent 4-bit fields (nibbles)
-//		res = (res & 0x00000F0F) << 4 | (res & 0x0000F0F0) >>> 4;
-//		// Swap adjacent 2-bit fields
-//		res = (res & 0x00003333) << 2 | (res & 0x0000CCCC) >>> 2;
-//		// Swap adjacent bits
-//		res = (res & 0x00005555) << 1 | (res & 0x0000AAAA) >>> 1;
-//		
-//		return (short) res;
-//	}
-	
 	
 	/**
 	 * Returns a copy of the given {@code int} with its bits in the
@@ -239,8 +103,7 @@ public final class BitReversalUtil {
 		
 		return i;
 	}
-	
-	
+
 	/**
 	 * Reverses the bits of the given integer, only applying the reversal to
 	 * its first (least significant) {@code bitWidth} bits. The
@@ -263,12 +126,6 @@ public final class BitReversalUtil {
 	 *    {@code bitWidth > 32}; or if {@code i >= 2^bitWidth} and
 	 *    {@code bitWidth < 32}.
 	 */
-	/* 
-	 * TODO #1: JUnit test this new v2.1.1: Changed the check for valid 'i',
-	 *   to fix a signed integer bug.
-	 * TODO #2: Delete the commented-out alternate method for checking for
-	 *   valid 'n'.
-	 */
 	public static int reverseBits(int i, int bitWidth) {
 		/* Verify validity of arguments: */
 		// Verify valid 'bitWidth':
@@ -279,12 +136,6 @@ public final class BitReversalUtil {
 			throw new IllegalArgumentException("bitWidth must be <= "
 					+ INT_WIDTH);
 		}
-		// DELETE THIS: After successful JUnit tests
-		/* Verify valid 'i':
-		 *   Note: The test for too large 'i' requires the cast to long,
-		 * otherwise 'i' is compared to a negative int when 'bitWidth' is
-		 * 31. */
-//		if (bitWidth < INT_WIDTH && (long) i >= 1L << bitWidth) {
 		
 		/* Verify valid 'i': */
 		// If bitWidth < INT_WIDTH && 'i' >= 2^bitWidth
@@ -309,8 +160,7 @@ public final class BitReversalUtil {
 			return i;
 		}
 	}
-	
-	
+
 	/**
 	 * Returns the bit-reversed increment of the specified bit-reversed
 	 * value, using the maximum virtual bit-width for a counter, which is
@@ -342,8 +192,7 @@ public final class BitReversalUtil {
 		
 		return bitReversedIncrement(revCount, Integer.SIZE - 1);
 	}
-	
-	
+
 	/**
 	 * Returns the bit-reversed increment of the specified bit-reversed
 	 * value, using the given virtual bit-width.
@@ -404,7 +253,6 @@ public final class BitReversalUtil {
 		return updateAs32bit >>> (INT_WIDTH - bitWidth);
 	}
 	
-	
 	/**
 	 * Returns the bit-reversed decrement of the specified bit-reversed
 	 * value, using the maximum virtual bit-width for a counter, which is
@@ -431,7 +279,6 @@ public final class BitReversalUtil {
 		
 		return bitReversedDecrement(revCount, Integer.SIZE - 1);
 	}
-	
 	
 	/**
 	 * Returns the bit-reversed decrement of the specified bit-reversed
@@ -495,7 +342,6 @@ public final class BitReversalUtil {
 		return updateAs32bit >>> (INT_WIDTH - bitWidth);
 	}
 	
-	
 	/**
 	 * Returns a copy of the given {@code long} with its bits in the
 	 * reverse order.
@@ -524,7 +370,6 @@ public final class BitReversalUtil {
 		return n;
 	}
 	
-	
 	/**
 	 * Reverses the bits of the given long integer, only applying the
 	 * reversal to its first (least significant) {@code bitWidth} bits. The
@@ -547,12 +392,6 @@ public final class BitReversalUtil {
 	 *    {@code bitWidth > 64}; or if {@code n >= 2^bitWidth} and
 	 *    {@code bitWidth < 64}.
 	 */
-	/* 
-	 * TODO #1: JUnit test this new v2.1.1: Changed the check for valid 'n',
-	 *   to fix a signed integer bug.
-	 * TODO #2: Delete the commented-out alternate method for checking for
-	 *   valid 'n'.
-	 */
 	public static long reverseBits(long n, int bitWidth) {
 		/* Verify validity of arguments: */
 		// Verify valid 'bitWidth':
@@ -563,17 +402,6 @@ public final class BitReversalUtil {
 			throw new IllegalArgumentException("bitWidth must be <= "
 					+ LONG_WIDTH);
 		}
-		/* Verify valid 'n': */ // DELETE THIS: After successful JUnit tests
-//		if (bitWidth < LONG_WIDTH) {
-//			if (bitWidth == LONG_WIDTH - 1 && n < 0) {
-//				throw new IllegalArgumentException("n must be nonnegative "
-//						+ "if bitWidth == " + (LONG_WIDTH - 1)); 
-//			}
-//			else if (bitWidth < LONG_WIDTH - 1 && n >= 1L << bitWidth) {
-//				throw new IllegalArgumentException("n must be < 2^bitWidth "
-//						+ "if bitWidth < " + (LONG_WIDTH - 1));
-//			}
-//		}
 		
 		/* Verify valid 'n': */
 		if (bitWidth < LONG_WIDTH - 1
@@ -598,7 +426,6 @@ public final class BitReversalUtil {
 			return n;
 		}
 	}
-	
 	
 	/**
 	 * Returns the bit-reversed increment of the specified bit-reversed
@@ -631,8 +458,7 @@ public final class BitReversalUtil {
 		
 		return bitReversedIncrement(revCount, Long.SIZE - 1);
 	}
-	
-	
+
 	/**
 	 * Returns the bit-reversed increment of the specified bit-reversed
 	 * value, using the given virtual bit-width.
@@ -692,8 +518,7 @@ public final class BitReversalUtil {
 		// Convert result back to 'bitWidth'-bit width
 		return updateAs64bit >>> (LONG_WIDTH - bitWidth);
 	}
-	
-	
+
 	/**
 	 * Returns the bit-reversed decrement of the specified bit-reversed
 	 * value, using the maximum virtual bit-width for a counter, which is
@@ -720,8 +545,7 @@ public final class BitReversalUtil {
 		
 		return bitReversedDecrement(revCount, Long.SIZE - 1);
 	}
-	
-	
+
 	/**
 	 * Returns the bit-reversed decrement of the specified bit-reversed
 	 * value, using the given virtual bit-width.
@@ -783,8 +607,8 @@ public final class BitReversalUtil {
 		// Convert result back to 'bitWidth'-bit width
 		return updateAs64bit >>> (LONG_WIDTH - bitWidth);
 	}
-	
-	
+
+
 	/**
 	 * More efficient version of {@code reverseBits(int)}, using a
 	 * modification of the algorithm used in v1.0, as specified in
@@ -810,7 +634,6 @@ public final class BitReversalUtil {
 	 * @see #reverseBits(int)
 	 * @see Integer#reverse(int) Integer.reverse(int)
 	 */
-	/* TODO: Test w/ JUnit. */
 	static int reverseBits_HSWarrenJr(int i) {
 		// Swap adjacent bits
 		i = (i & 0x55555555) << 1 | ((i >>> 1) & 0x55555555); 
@@ -824,8 +647,7 @@ public final class BitReversalUtil {
 		
 		return i;
 	}
-	
-	
+
 	/**
 	 * More efficient version of {@code reverseBits(long)}, using an
 	 * adaptation of an algorithm specified in <em>Hacker's Delight</em> by
@@ -852,7 +674,6 @@ public final class BitReversalUtil {
 	 * @see #reverseBits(long)
 	 * @see Long#reverse(long) Long.reverse(long)
 	 */
-	/* TODO: Test w/ JUnit. */
 	static long reverseBits_HSWarrenJr(long l) {
 		// Swap adjacent bits
 		l = (l & 0x5555555555555555L) << 1
@@ -872,8 +693,7 @@ public final class BitReversalUtil {
 				
 		return l;
 	}
-	
-	
+
 	/**
 	 * Returns a copy of the given {@code byte} with its bits in the
 	 * reverse order.
@@ -896,7 +716,6 @@ public final class BitReversalUtil {
 	 * @return a copy of the given {@code byte} with its bits in the
 	 *    reverse order.
 	 */
-	/* TODO: Test w/ JUnit. */
 	static byte reverseBits_Vecerina(byte b) {
 		int res = (int) b;
 		res = ((res >>> 1) & 0x00000055) | ((res << 1) & 0x000000AA);
@@ -905,5 +724,4 @@ public final class BitReversalUtil {
 		
 		return (byte) res;
 	}
-	
 }

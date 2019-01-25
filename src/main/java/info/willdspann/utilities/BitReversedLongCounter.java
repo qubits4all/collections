@@ -1,73 +1,18 @@
-/*
- * Last Modified: 7/17/08
- * Prev. Modified: 7/14/08
- * J2SE Version: 5.0
- * 
- * Version Notes: Updated increment() & decrement() to use the new
- *   BitReversalUtil methods bitReversedIncrement(long) &
- *   bitReversedDecrement(long), respectively, which perform a bit-reversed
- *   increment or decrement using the max. bit-width for a long counter,
- *   which is Long.SIZE - 1. Also, renamed the factory methods
- *   newStartingAtReversedCount(long) & newStartingAtNonreversedCount(long),
- *   to the shorter newAtReversedCount(long) & newAtNonreversedCount(long)
- *   respectively. Finally, added an assert statement to the protected
- *   BitReversedCounter(long,boolean) constructor, which will fail if an
- *   invalid value is given for the 'start' parameter.
- *     v2.3: Updated increment() & decrement(), so that these methods
- *   now call the new BitReversalUtil methods bitReversedIncrement(long,int)
- *   & bitReversedDecrement(long,int), respectively, instead of performing
- *   the increment or decrement themselves. These new methods are a
- *   generalization of the operations increment() & decrement() performed in
- *   the previous version this class.
- *       Also, changed the visibility of the 'count' & 'revCount' fields
- *   from private to protected. Changed the visibility of the 'SIG_BITS'
- *   int constant from private to public. Changed the visibility of the 2
- *   constructors, and the increment() & decrement() methods from private to
- *   protected. These changes were made to allow another class to easily
- *   extend from this class.
- *     v2.2: Reimplemented increment() & decrement() to use much more
- *   efficient algorithms, which increment or decrement, respectively, the
- *   bit-reversed counter directly, without the need to call
- *   BitReversalUtil.reverseBits(long). Details on the source of these
- *   algorithms are given in the Javadocs for these methods. Also made a
- *   minor change to the argument validity test in decrement().
- *       Also completed the Javadocs, adding docs for the 2 constructors
- *   and 3 static factory methods, and the class's fields and constants.
- *   Updated the Javadocs for getAndIncrement(), incrementAndGet(),
- *   increment(), getAndDecrement(), decrementAndGet(), decrement(),
- *   set(long) & setNonreversed(long).
- *     v2.1: Added a reset() method, which resets this counter to 0.
- *   Added set(int) & setNonreversed(int) methods, which set the counter's
- *   bit-reversed count or non-bit-reversed count, respectively.
- *     v2.0.1: Fixed a bug in increment() & decrement(), wherein the
- *   check for a max-value or min-value condition, respectively, was not
- *   correct.
- *     v2.0: Changed increment() & decrement() to private methods that
- *   don't return anything. Changed their impl. to call BitReveralUtil's
- *   new reverseBits(long,int) method, specifying SIG_BITS for the bit-width.
- *   This change enabled increasing MAX_VALUE from 2^32-1 to 2^63-1.
- *       Also, added getAndIncrement(), incrementAndGet(),
- *   getAndDecrement() & decrementAndGet() methods, which call increment()
- *   or decrement(), respectively. Removed the unsignedIntToLong(int)
- *   method, because it is no longer needed.
- *     v1.0.1: Simplified the impl. of unsignedIntToLong(int), by using
- *   a bit-mask in the conversion. The previous version used a cast,
- *   followed by 2 binary shift operations.
- */
-
 package info.willdspann.utilities;
 
 /**
  * A counter that counts in bit-reversed order.
  *
- * @author <A HREF="mailto:willdspann@yahoo.com">Will D. Spann</A>
+ * @author Will D. Spann
  * @version 2.4
  * @see BitReversalUtil BitReversalUtil
  */
 public class BitReversedLongCounter {
+
 	/** Maximum counter value, equal to {@code Long.MAX_VALUE}, which is
 	 *  {@code 2^63 - 1}. */
 	public static final long MAX_VALUE = Long.MAX_VALUE;  // 2^63 - 1
+
 	/** The virtual bit-width used by this counter. In this counter's
 	 *  reversed and non-reversed count values, any high bits left of the
 	 *  bit index given by this constant minus one, are guaranteed to
@@ -90,8 +35,7 @@ public class BitReversedLongCounter {
 		this.count = 0;
 		this.revCount = 0;
     }
-	
-	
+
 	/**
 	 * Constructor that creates a new counter starting at the specified
 	 * {@code start} value, which represents the counter's reversed or
@@ -124,21 +68,16 @@ public class BitReversedLongCounter {
 	
 	/**
 	 * Factory method for creating a new counter starting at 0.
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 */
 	public static BitReversedLongCounter newInstance() {
 		return new BitReversedLongCounter();
 	}
-	
 	
 	/**
 	 * Factory method that creates a new counter starting at the specified
 	 * bit-reversed count.
 	 * <p>
 	 * Version: 2.0
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @param start the bit-reversed starting count to be used, which must
 	 *    be nonnegative.
@@ -151,15 +90,12 @@ public class BitReversedLongCounter {
 		
 		return new BitReversedLongCounter(start, true);
 	}
-	
-	
+
 	/**
 	 * Factory method that creates a new counter starting at the specified
 	 * non-bit-reversed count.
 	 * <p>
 	 * Version: 2.0
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @param start the non-bit-reversed starting count to be used, which
 	 *    must be nonnegative.
@@ -173,14 +109,11 @@ public class BitReversedLongCounter {
 		return new BitReversedLongCounter(start, false);
 	}
 	
-	
 	/**
 	 * Performs a bit-reversed increment and returns the bit-reversed count
 	 * from before the increment.
 	 * <p>
 	 * Version: 1.1
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 *
 	 * @return the bit-reversed count from before the increment.
 	 *
@@ -195,14 +128,11 @@ public class BitReversedLongCounter {
 		return ret;
 	}
 	
-	
 	/**
 	 * Performs a bit-reversed increment and returns the new bit-reversed
 	 * count.
 	 * <p>
 	 * Version: 1.1
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 *
 	 * @return the bit-reversed count obtained by performing a
 	 *    bit-reversed increment.
@@ -216,15 +146,12 @@ public class BitReversedLongCounter {
 		increment();
 		return this.revCount;
 	}
-	
-	
+
 	/**
 	 * Performs a bit-reversed decrement and returns the bit-reversed count
 	 * from before the decrement.
 	 * <p>
 	 * Version: 1.1
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 *
 	 * @return the bit-reversed count from before the decrement.
 	 *
@@ -237,15 +164,12 @@ public class BitReversedLongCounter {
 		decrement();
 		return ret;
 	}
-	
-	
+
 	/**
 	 * Performs a bit-reversed decrement and returns the new bit-reversed
 	 * count.
 	 * <p>
 	 * Version: 1.1
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 *
 	 * @return the bit-reversed count obtained by performing a
 	 *    bit-reversed decrement.
@@ -259,12 +183,9 @@ public class BitReversedLongCounter {
 		return this.revCount;
 	}
 	
-	
 	/**
 	 * Sets the counter's bit-reversed count to the specified value, which
 	 * must be nonnegative.
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @param reversedValue the bit-reversed value to set the counter's
 	 *    bit-reversed count to, which must be nonnegative.
@@ -280,13 +201,10 @@ public class BitReversedLongCounter {
 		this.revCount = reversedValue;
 		this.count = BitReversalUtil.reverseBits(this.revCount, SIG_BITS);
 	}
-	
-	
+
 	/**
 	 * Sets the counter's non-bit-reversed count to the specified value,
 	 * which must be nonnegative.
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @param value the non-bit-reversed value to set the counter's
 	 *    non-bit-reversed count to, which must be nonnegative.
@@ -302,45 +220,36 @@ public class BitReversedLongCounter {
 		this.count = value;
 		this.revCount = BitReversalUtil.reverseBits(this.count, SIG_BITS);
 	}
-	
-	
+
 	/**
 	 * Resets this counter to 0.
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 */
 	public void reset() {
 		this.count = 0L;
 		this.revCount = 0L;
 	}
-	
-	
+
 	/**
 	 * Returns the current bit-reversed count.
 	 * <p>
 	 * Version: 1.1
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 * 
 	 * @return the current bit-reversed count.
 	 */
 	public long get() {
 		return this.revCount;
 	}
-	
-	
+
 	/**
 	 * Return the current non-bit-reversed count.
 	 * <p>
 	 * Version: 1.1
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 */
 	public long getNonreversedCount() {
 		return this.count;
 	}
-	
-	
+
+
 	/**
 	 * Performs a bit-reversed increment.
 	 * <p>
@@ -365,7 +274,6 @@ public class BitReversedLongCounter {
 		this.count++;
 	}
 	
-	
 	/**
 	 * Performs a bit-reversed decrement.
 	 * <p>
@@ -388,5 +296,4 @@ public class BitReversedLongCounter {
 		// Decrement non-bit-reversed counter
 		this.count--;
 	}
-	
 }

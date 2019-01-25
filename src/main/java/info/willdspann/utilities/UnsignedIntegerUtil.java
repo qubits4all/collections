@@ -53,7 +53,7 @@ package info.willdspann.utilities;
  * (signed or unsigned), performs sign extension, which causes negative
  * integers to retain their negative value.
  * 
- * @author <A HREF="mailto:willdspann@yahoo.com">Will D. Spann</A>
+ * @author Will D. Spann
  * @version 1.3
  */
 public final class UnsignedIntegerUtil {
