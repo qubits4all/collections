@@ -8,9 +8,20 @@
     <artifactId>collections</artifactId>
     <version>0.1-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>${findbugs.jsr-305.version}</version>
+        </dependency>
+    </dependencies>
+
     <properties>
         <maven.compiler.source>9</maven.compiler.source>
         <maven.compiler.target>9</maven.compiler.target>
+
+        <!-- Dependency versions -->
+        <findbugs.jsr-305.version>2.0.1</findbugs.jsr-305.version>
     </properties>
 
     <build>
