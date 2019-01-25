@@ -1,18 +1,3 @@
-/*
- * Last Modified: 7/17/08
- * Prev. Modified: 7/17/08
- * J2SE Version: 5.0
- * 
- * Version Notes: Changed incrementAboveMax() to use the
- *   newAtNonreversedCount(int) factory method instead of
- *   newAtReversedCount(int). Also, added version info to test methods that
- *   were updated in v1.1. 
- *     v1.1: Updated the tests to use BitReversedCounter's renamed
- *   newAtReversedCount(int) & newAtNonreversedCount(int) factory methods.
- *     v1.0.1: Minor changes, replacing literal integer constants with
- *   integer constants, such as TEST_DATA_SZ.
- */
-
 package info.willdspann.utilities;
 
 import java.util.*;  // List, Arrays, Collections
@@ -24,7 +9,7 @@ import static org.junit.Assert.*;
 /**
  * JUnit unit-testing class for testing {@code BitReversedCounter}.
  *
- * @author <A HREF="mailto:willdspann@yahoo.com">Will D. Spann</A>
+ * @author Will D. Spann
  * @version 1.1.1
  * @see BitReversedCounter BitReversedCounter
  */

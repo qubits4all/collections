@@ -1,15 +1,3 @@
-/*
- * Last Modified: 7/17/08
- * Prev. Modified: 7/14/08
- * J2SE Version: 5.0
- * 
- * Version Notes: Updated the tests to use BitReversedCounter's renamed
- *   newAtReversedCount(long) & newAtNonreversedCount(long) factory methods.
- *   Also, changed incrementAboveMax() to use the
- *   newAtNonreversedCount(long) factory method instead of
- *   newAtReversedCount(long).
- */
-
 package info.willdspann.utilities;
 
 import java.util.*;  // List, Arrays, Collections
@@ -21,7 +9,7 @@ import static org.junit.Assert.*;
 /**
  * JUnit unit-testing class for testing {@code BitReversedLongCounter}.
  *
- * @author <A HREF="mailto:willdspann@yahoo.com">Will D. Spann</A>
+ * @author Will D. Spann
  * @version 1.1
  * @see BitReversedLongCounter
  * 		BitReversedLongCounter

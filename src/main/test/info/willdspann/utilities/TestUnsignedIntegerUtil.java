@@ -1,21 +1,3 @@
-/*
- * Last Modified: 5/9/14
- * Prev. Modified: 6/5/08 
- * J2SE Version: 5.0
- * 
- * Version Notes: Added tests for the new testUnsignedByteToInt(int),
- *   testUnsignedByteToLong(int) & testUnsignedShortToLong(short) methods.
- *     v1.2: Added 4 new tests, which test the new unsigned integer
- *   comparison methods unsignedByteCompare(byte,byte),
- *   unsignedShortCompare(short,short), unsignedIntCompare(int,int) &
- *   unsignedLongCompare(long,long). Also added a new method
- *   getMaxUnsigned(Class<N>), which returns the maximum unsigned value for
- *   the specified integer type, and is used by these new tests.
- *     v1.1: Added 2 test methods for the new UnsignedIntegerUtil
- *   method unsignedShortToChar(short). Removed the 2 tests that tested
- *   the now removed charToInt(char) method.
- */
-
 package info.willdspann.utilities;
 
 import junit.framework.TestCase;
@@ -24,7 +6,7 @@ import junit.framework.TestCase;
  * JUnit TestCase for UnsignedIntegerUtil. 
  * 
  * @see UnsignedIntegerUtil UnsignedIntegerUtil
- * @author <A HREF="mailto:willdspann@yahoo.com">Will D. Spann</A>
+ * @author Will D. Spann
  * @version 1.3
  */
 public class TestUnsignedIntegerUtil extends TestCase {	
