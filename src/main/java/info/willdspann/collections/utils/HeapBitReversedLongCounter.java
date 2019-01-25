@@ -10,7 +10,7 @@ import info.willdspann.utilities.BitReversalUtil;
  * the root node.
  *
  * @author Will D. Spann
- * @see info.willdspann.collections.concurrent.queues.ConcurrentBigPriorityQueue
+ * @see info.willdspann.collections.concurrent.queue.ConcurrentBigPriorityQueue
  *    ConcurrentBigPriorityQueue
  * @version 2.0
  */
