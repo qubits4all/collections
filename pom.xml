@@ -9,11 +9,29 @@
     <version>0.1-SNAPSHOT</version>
 
     <dependencies>
+
+        <!--*****************************-->
+        <!--*** Third-party Libraries ***-->
+        <!--*****************************-->
+
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>${findbugs.jsr-305.version}</version>
         </dependency>
+
+        <!--************************************-->
+        <!--*** Third-party Libraries - Test ***-->
+        <!--************************************-->
+
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${org.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <properties>
@@ -22,6 +40,7 @@
 
         <!-- Dependency versions -->
         <findbugs.jsr-305.version>2.0.1</findbugs.jsr-305.version>
+        <org.junit.version>4.12</org.junit.version>
     </properties>
 
     <build>
