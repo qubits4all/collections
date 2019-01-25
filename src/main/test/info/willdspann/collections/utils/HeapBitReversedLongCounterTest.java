@@ -1,21 +1,10 @@
-/*
- * Last Modified: 10/5/08
- * Prev. Modified: 7/17/08
- * J2SE Version: 5.0
- * 
- * Version Notes: Removed debug output code, since all tests now pass. 
- */
-
 package info.willdspann.collections.utils;
 
 import java.util.*;  // List, Arrays, Collections
 
 import org.junit.Test;
 
-import info.willdspann.collections.utils.HeapBitReversedLongCounter;
-
 import static org.junit.Assert.*;
-
 
 /**
  * JUnit unit-testing class for testing
@@ -60,8 +49,7 @@ public class HeapBitReversedLongCounterTest {
 		assertEquals(0L, count.get());
 		assertEquals(0L, count.getNonreversedCount());
 	}
-	
-	
+
 	@Test
 	public void factoryNewAtRevCount() {
 		HeapBitReversedLongCounter count = HeapBitReversedLongCounter
@@ -71,8 +59,7 @@ public class HeapBitReversedLongCounterTest {
 		assertEquals(REV_VAL, count.get());
 		assertEquals(NONREV_VAL, count.getNonreversedCount());
 	}
-	
-	
+
 	@Test
 	public void factoryNewAtRevCountBelowZero() {
 		HeapBitReversedLongCounter count = HeapBitReversedLongCounter
@@ -80,8 +67,7 @@ public class HeapBitReversedLongCounterTest {
 		
 		assertNull(count);
 	}
-	
-	
+
 	@Test
 	public void factoryNewAtNonrevCount() {
 		HeapBitReversedLongCounter count = HeapBitReversedLongCounter
@@ -91,8 +77,7 @@ public class HeapBitReversedLongCounterTest {
 		assertEquals(NONREV_VAL, count.getNonreversedCount());
 		assertEquals(REV_VAL, count.get());
 	}
-	
-	
+
 	@Test
 	public void factoryNewAtNonrevCountBelowZero() {
 		HeapBitReversedLongCounter count = HeapBitReversedLongCounter
@@ -100,8 +85,7 @@ public class HeapBitReversedLongCounterTest {
 		
 		assertNull(count);
 	}
-	
-	
+
 	/**
 	 * Version: 1.1
 	 */
@@ -112,8 +96,7 @@ public class HeapBitReversedLongCounterTest {
 		for (long exp : incrValues)
 			assertEquals(exp, count.getAndIncrement());
 	}
-    
-    
+
 	/**
 	 * Version: 1.1
 	 */
@@ -129,8 +112,7 @@ public class HeapBitReversedLongCounterTest {
     		assertEquals(exp, count.incrementAndGet());
     	}
     }
-    
-    
+
     /**
      * Version: 2.0
      */
@@ -148,24 +130,6 @@ public class HeapBitReversedLongCounterTest {
     	assertEquals(0L, count.get());
     }
     
-    
-//    @Test
-//    public void getAndDecrement() {
-//    	// Increment counter to non-reversed value TEST_DATA_SZ - 1:
-//    	HeapBitReversedLongCounter count = new HeapBitReversedLongCounter();
-//    	for (int i = 0; i < TEST_DATA_SZ - 1; i++)
-//    		count.incrementAndGet();
-//    	
-//    	int j = TEST_DATA_SZ - 1;
-//    	long exp;
-//    	for (Iterator<Long> it = decrValues.iterator(); j > 0; j--) {
-//    		exp = it.next();
-//    		assertEquals(exp, count.getAndDecrement());
-//    	}
-//    	assertEquals(0L, count.get());
-//    }
-    
-    
     /**
      * Version: 2.0
      */
@@ -178,19 +142,6 @@ public class HeapBitReversedLongCounterTest {
     		assertEquals(exp, count.decrementAndGet());
     }
     
-    
-//    @Test
-//    public void decrementAndGet() {
-//    	// Increment counter to non-reversed value TEST_DATA_SZ:
-//    	HeapBitReversedLongCounter count = new HeapBitReversedLongCounter();
-//    	for (int i = 0; i < TEST_DATA_SZ; i++)
-//    		count.incrementAndGet();
-//    	
-//    	for (long exp : decrValues)
-//    		assertEquals(exp, count.decrementAndGet());
-//    }
-    
-    
     @Test
     public void set() {
     	HeapBitReversedLongCounter count = HeapBitReversedLongCounter
@@ -202,7 +153,6 @@ public class HeapBitReversedLongCounterTest {
     	assertEquals(NONREV_VAL, count.getNonreversedCount());
     }
     
-    
     @Test(expected=IllegalArgumentException.class)
     public void setBelowZero() {
     	HeapBitReversedLongCounter count = HeapBitReversedLongCounter
@@ -210,7 +160,6 @@ public class HeapBitReversedLongCounterTest {
     	
     	count.set(-1L);
     }
-    
     
     @Test
     public void setNonreversed() {
@@ -222,8 +171,7 @@ public class HeapBitReversedLongCounterTest {
     	assertEquals(NONREV_VAL, count.getNonreversedCount());
     	assertEquals(REV_VAL, count.get());
     }
-    
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void setNonreversedBelowZero() {
     	HeapBitReversedLongCounter count = HeapBitReversedLongCounter
@@ -231,8 +179,7 @@ public class HeapBitReversedLongCounterTest {
     	
     	count.setNonreversed(-1L);
     }
-    
-    
+
     /**
 	 * Version: 1.1
 	 */
@@ -246,8 +193,7 @@ public class HeapBitReversedLongCounterTest {
     	assertEquals(0L, count.get());
     	assertEquals(0L, count.getNonreversedCount());
     }
-    
-    
+
     /**
 	 * Version: 1.1
 	 */
@@ -259,8 +205,7 @@ public class HeapBitReversedLongCounterTest {
     	
     	assertEquals(incrValues.get(1).longValue(), count.get());
     }
-    
-    
+
     /**
 	 * Version: 1.1
 	 */
@@ -272,8 +217,7 @@ public class HeapBitReversedLongCounterTest {
     	
     	assertEquals(1L, count.getNonreversedCount());
     }
-    
-    
+
     /**
 	 * Version: 1.1
 	 */
@@ -283,7 +227,6 @@ public class HeapBitReversedLongCounterTest {
     			.newInstance();
     	count.decrementAndGet();
     }
-    
     
     /**
 	 * Version: 2.0
@@ -296,5 +239,4 @@ public class HeapBitReversedLongCounterTest {
     	
     	count.incrementAndGet();
     }
-
 }
