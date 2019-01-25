@@ -280,57 +280,6 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		for (int j = 0; j < COUNT; j++)
     			assertTrue(covered[j]);
     	}
-    	
-    	/**
-    	 * <p>
-    	 * Version: 1.0.1
-    	 */
-    	@Test
-    	public void testRemove1stObjectWithMultiple() {
-    		int[] rands = getShuffledInts(COUNT);
-    		for (int n : rands)
-    			q.offer("test" + (n+1));
-    		assertTrue(q.remove("test1")); // Remove 1st item
-    		assertEquals(COUNT-1, q.size());
-    		
-    		for (int i = 0; i < q.size(); i++)
-    			assertEquals("test" + (i+2), q.poll());
-    	}
-
-    	/**
-    	 * <p>
-    	 * Version: 1.0.1
-    	 */
-    	@Test
-    	public void testRemoveLastObjectWithMultiple() {
-    		int[] rands = getShuffledInts(COUNT);
-    		for (int n : rands)
-    			q.offer("test" + (n+1));
-    		assertTrue(q.remove("test" + COUNT)); // Remove last item
-    		assertEquals(COUNT-1, q.size());
-    		
-    		
-    		for (int i = 0; i < q.size(); i++)
-    			assertEquals("test" + (i+1), q.poll());
-    	}
-
-    	/**
-    	 * <p>
-    	 * Version: 1.0.1
-    	 */
-    	@Test
-    	public void testRemoveMiddleObjectWithMultiple() {
-    		final int COUNT = 3;
-    		int[] rands = getShuffledInts(COUNT);
-    		for (int n : rands)
-    			q.offer("test" + (n+1));
-    		assertTrue(q.remove("test2")); // Remove middle item
-    		assertEquals(COUNT-1, q.size());
-    		
-    		String[] expected = new String[] { "test1", "test3" };
-    		for (int i = 0; i < q.size(); i++)
-    			assertEquals(expected[i], q.poll());
-    	}
 
     	@Test
     	public void testContains() {
