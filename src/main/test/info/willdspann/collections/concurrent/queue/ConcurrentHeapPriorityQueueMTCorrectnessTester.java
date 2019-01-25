@@ -1,17 +1,8 @@
-/*
- * Last Modified: 12/28/09
- * Prev. Modified: 2/14/09
- * J2SE Version: 5.0
- * 
- * Version Notes: 
- */
-
 package info.willdspann.collections.concurrent.queue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
 
 /**
  * JUnit test for multithreaded correctness testing of

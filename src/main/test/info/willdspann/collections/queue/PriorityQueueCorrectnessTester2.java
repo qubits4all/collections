@@ -1,26 +1,16 @@
-/*
- * Last Modified: 12/28/09
- * Java SE 6
- */
-
 package info.willdspann.collections.queue;
 
 import java.util.*;  // Queue, List, ArrayList, Collections, Arrays, Random
 
 import org.junit.*;  // Test, Before
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 import org.junit.experimental.categories.*;
-import org.junit.experimental.categories.Categories.*;
 
 import static org.junit.Assert.*;
 
 /**
  *
  *
- * @author <A HREF="mailto:willdspann@yahoo.com">Will D. Spann</A>
+ * @author Will D. Spann
  * @version 1.0
  */
 public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
@@ -28,8 +18,6 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
 	
 	private Class<Q> queueType;
 	private Queue<String> q;
-//	private OptionalMethods[] optMethods = null;
-	
 
 	/**
 	 * @throws NullPointerException if {@code queueType} is {@code null}.
@@ -41,24 +29,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     	
     	this.queueType = queueType;
     }
-    
-    
-//    protected PriorityQueueCorrectnessTester(Class<Q> queueType,
-//    		OptionalMethods[] optionalMethodsToTest)
-//    {
-//    	// Check validity of arguments:
-//    	if (queueType == null || optionalMethodsToTest == null)
-//    		throw new NullPointerException();
-//    	if (optionalMethodsToTest.length == 0) {
-//    		throw new IllegalArgumentException("'optionalMethodsToTest' must " +
-//    				"be a non-empty OptionalMethods[] array.");
-//    	}
-//    	
-//    	this.queueType = queueType;
-//    	this.optMethods = optionalMethodsToTest;
-//    }
-    
-    
+
     /**
      * Returns an array of ints shuffled randomly.
      * 
@@ -77,37 +48,12 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     	return ints;
     }
 
-    
-    
+
     public interface RequiredQueueTests { }
     
     public interface OptionalQueueTests { }
     
     public interface AddTests { }
-    
-    
-//    @RunWith(Suite.class)
-//    @SuiteClasses({RunRequiredSuite.class, RunOptionalSuite.class})
-//    public static class RunAllSuite {
-//    }
-    
-//    @RunWith(Categories.class)
-//    @IncludeCategory(AddTests.class)
-//    @SuiteClasses({PriorityQueueOptCorrectnessTester.class})
-//    public static class OptAddSuite {
-//    }
-//    
-//    @RunWith(Categories.class)
-//    @IncludeCategory(RequiredQueueTests.class)
-//    @SuiteClasses({PriorityQueueReqdCorrectnessTester.class})
-//    public static class RunRequiredSuite {
-//    }
-//    
-//    @RunWith(Categories.class)
-//    @IncludeCategory(OptionalQueueTests.class)
-//    @SuiteClasses({PriorityQueueOptCorrectnessTester.class})
-//    public static class RunOptionalSuite {
-//    }
     
     
     @Category(RequiredQueueTests.class)
@@ -140,8 +86,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
         		ints[j++] = n;
         	return ints;
         }
-    	
-    	
+
     	@Before
         public void setup() {
         	try {
@@ -153,8 +98,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
         		fail("Specified Queue doesn't have a public no-argument "
     					+ "constructor. Unable to create instance via reflection.");
         	}
-        } 
-    	
+        }
     	
     	@Test
         public void testIsEmptyWhenConstructed() {
@@ -162,14 +106,12 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
         	assertEquals(0, q.size());
         }
     	
-    	
     	@Test
     	public void testPeekOnEmpty() {
     		String str = q.peek();
     		
     		assertNull(str);
     	}
-    	
     	
     	@Test
     	public void testPeekWith1() {
@@ -180,8 +122,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertEquals("test", first);
     		assertEquals(1, q.size());
     	}
-    	
-    	
+
     	@Test
     	public void testPeekMultiple() {
     		int[] rands = getShuffledInts(COUNT);
@@ -193,13 +134,11 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertEquals("test1", first);
     		assertEquals(COUNT, q.size());
     	}
-    	
-    	
+
     	@Test(expected=NoSuchElementException.class)
     	public void testElementOnEmpty() {
     		q.element();
     	}
-    	
     	
     	@Test
     	public void testElementWith1() {
@@ -210,7 +149,6 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertEquals("test", first);
     		assertEquals(1, q.size());
     	}
-    	
     	
     	@Test
     	public void testElementMultiple() {
@@ -224,7 +162,6 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertEquals(COUNT, q.size());
     	}
     	
-    	
     	@Test
     	public void testOfferOnEmpty() {
     		q.offer("test");
@@ -233,8 +170,6 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertNotNull(first);
     		assertEquals("test", first);
     	}
-    	
-    	
     	
     	@Test
     	public void testOfferAndPollMultiple() {
@@ -249,8 +184,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		}
     		assertTrue(q.isEmpty());
     	}
-    	
-    	
+
     	@Test
     	public void testAddOnEmpty() {
     		q.add("test");
@@ -259,8 +193,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertNotNull(first);
     		assertEquals("test", first);
     	}
-    	
-    	
+
     	@Test
     	public void testAddAndRemoveMultiple() {
     		int[] rands = getShuffledInts(COUNT);
@@ -274,16 +207,14 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		}
     		assertTrue(q.isEmpty());
     	}
-    	
-    	
+
     	@Test
     	public void testPollOnEmpty() {
     		String polled = q.poll();
     		
     		assertNull(polled);
     	}
-    	
-    	
+
     	@Test
     	public void testPollWith1() {
     		q.offer("test");
@@ -294,12 +225,10 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertTrue(q.isEmpty());
     	}
     	
-    	
     	@Test(expected=NoSuchElementException.class)
     	public void testRemoveOnEmpty() {
     		q.remove();
     	}
-    	
     	
     	@Test
     	public void testRemoveWith1() {
@@ -311,15 +240,13 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertTrue(q.isEmpty());
     	}
     	
-    	
     	@Test
     	public void testIteratorOnEmpty() {
     		for (String str : q)
     			fail();
     		assertTrue(true);
     	}
-    	
-    	
+
     	@Test
     	public void testIteratorWith1() {
     		q.offer("test");
@@ -331,7 +258,6 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		}
     		assertEquals(1, i);
     	}
-    	
     	
     	/**
     	 * <p>
@@ -355,7 +281,6 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     			assertTrue(covered[j]);
     	}
     	
-    	
     	/**
     	 * <p>
     	 * Version: 1.0.1
@@ -371,8 +296,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		for (int i = 0; i < q.size(); i++)
     			assertEquals("test" + (i+2), q.poll());
     	}
-    	
-    	
+
     	/**
     	 * <p>
     	 * Version: 1.0.1
@@ -389,8 +313,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		for (int i = 0; i < q.size(); i++)
     			assertEquals("test" + (i+1), q.poll());
     	}
-    	
-    	
+
     	/**
     	 * <p>
     	 * Version: 1.0.1
@@ -408,8 +331,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		for (int i = 0; i < q.size(); i++)
     			assertEquals(expected[i], q.poll());
     	}
-    	
-    	
+
     	@Test
     	public void testContains() {
     		int[] rands = getShuffledInts(COUNT);
@@ -421,13 +343,11 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertFalse(q.contains("blah"));
     	}
     	
-    	
     	@Test
     	public void testContainsAllOnEmpty() {
     		assertFalse(q.containsAll(Arrays.asList("blah")));
     	}
-    	
-    	
+
     	@Test
     	public void testContainsAllEmptyCollection() {
     		for (int i = 0; i < COUNT; i++)
@@ -436,8 +356,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		
     		assertTrue(q.containsAll(emptyList));
     	}
-    	
-    	
+
     	@Test
     	public void testContainsAllOnMultiple() {
     		final int COUNT = 3;
@@ -448,15 +367,13 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		List<String> strs = Arrays.asList("test1", "test3");
     		assertTrue(q.containsAll(strs));
     	} 
-    	
-    	
+
     	@Test
     	public void testSizeWith1() {
     		q.offer("test");
     		
     		assertEquals(1, q.size());
     	}
-    	
     	
     	@Test
     	public void testSizeWithMultiple() {
@@ -467,7 +384,6 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		assertEquals(COUNT, q.size());
     	}
     	
-    	
     	@Test
     	public void testIsEmptyWithItems() {
     		int[] rands = getShuffledInts(COUNT);
@@ -476,8 +392,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		
     		assertFalse(q.isEmpty());
     	}
-    	
-    	
+
     	/**
     	 * <p>
     	 * Version: 1.0.1
@@ -499,8 +414,7 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     		for (int j = 0; j < COUNT; j++)
     			assertTrue(covered[j]);
     	}
-    	
-    	
+
     	/**
     	 * <p>
     	 * Version: 1.0.1
@@ -523,36 +437,4 @@ public class PriorityQueueCorrectnessTester2<Q extends Queue<String>> {
     			assertTrue(covered[j]);
     	}
     }
-    
-    
-//    protected enum OptionalMethods {
-//    	addAll,
-//    	clear,
-//    	remove_Object,
-//    	removeAll,
-//    	retainAll,
-//    	Iterator_remove
-//    }
-    
-    
-//    @Test
-//    public void testSingleThreadedCorrectness() {
-//    	
-//    	// Test Queue optional methods
-//    	if (this.optMethods != null) {
-//    		
-//    	} else {
-//    		testAddOnEmpty();
-//    		testAddAndRemoveMultiple();
-//    		testAddAllEmptyCollection();
-//    		testAddAll();
-//    		testClearOnEmpty();
-//    		testClearWith1();
-//    		testClearMultiple();
-//    		testRemoveObjectOnEmpty();
-//    		testRemoveObjectWith1();
-//    		// ...
-//    	}
-//    }
-
 }

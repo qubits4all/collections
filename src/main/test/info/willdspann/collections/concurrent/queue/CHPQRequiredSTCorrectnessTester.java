@@ -1,8 +1,3 @@
-/*
- * Last Modified: 12/29/09
- * Java SE 6
- */
-
 package info.willdspann.collections.concurrent.queue;
 
 import org.junit.Test;
@@ -14,7 +9,7 @@ import info.willdspann.collections.queue.PriorityQueueCorrectnessTester2.Require
 /**
  *
  *
- * @author <A HREF="mailto:willdspann@yahoo.com">Will D. Spann</A>
+ * @author Will D. Spann
  * @version 1.0
  */
 public class CHPQRequiredSTCorrectnessTester
