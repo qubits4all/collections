@@ -1,16 +1,6 @@
-/*
- * Last Modified: 1/11/09
- * Prev. Modified: 
- * J2SE Version: 5.0
- * 
- * Version Notes: 
- */
-
-
 package info.willdspann.collections.utils;
 
 import info.willdspann.utilities.BitReversalUtil;
-
 
 /**
  * A heap bit-reversed counter. This class is a special type of bit-reversed
@@ -23,17 +13,22 @@ import info.willdspann.utilities.BitReversalUtil;
  * @version 1.0
  */
 public class HeapBitReversedCounter {
+
 	/** Maximum counter value, equal to {@code Integer.MAX_VALUE}, which is
 	 *  {@code 2^31 - 1} or {@value MAX_VALUE}. */
 	public static final int MAX_VALUE = Integer.MAX_VALUE;  // 2^31 - 1
 	
 	protected int count, nonrevCount;
+
 	/** Reversed count within the current row of the heap. */
 	protected int rowCount;
+
 	/** Non-reversed count within the current row of the heap. */
 	protected int nonrevRowCount;
+
 	/** Size of the current row of the heap. */
 	protected int rowSz;
+
 	/** Current level in the heap (where 0 is the root level). This is also
 	 *  the virtual bit-width used when incrementing or decrementing the
 	 *  bit-reversed {@code rowCount} counter. */
@@ -51,7 +46,6 @@ public class HeapBitReversedCounter {
 		this.rowSz = 1;
 		this.bitWidth = 0;
 	}
-	
 	
 	/**
 	 * Creates a new counter with an initial value of {@code start}, which
@@ -74,26 +68,21 @@ public class HeapBitReversedCounter {
 		else
 			privSetNonrev(start);
 	}
-	
-	
+
+
 	/**
 	 * Returns a new counter starting at 0.
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 * 
 	 * @return a new counter starting at 0.
 	 */
 	public static HeapBitReversedCounter newInstance() {
 		return new HeapBitReversedCounter();
 	}
-	
-	
+
 	/**
 	 * Returns a new counter starting at the specified bit-reversed count.
 	 * <p>
 	 * Version: 1.1
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @param count the bit-reversed starting count, which must be greater
 	 *    than or equal to 0.
@@ -109,14 +98,11 @@ public class HeapBitReversedCounter {
 		return new HeapBitReversedCounter(count, true);
 	}
 	
-	
 	/**
 	 * Returns a new counter starting at the specified non-bit-reversed
 	 * count.
 	 * <p>
 	 * Version: 1.1
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @param nonreversedCount the non-bit-reversed starting count, which
 	 *    must be greater than or equal to 0.
@@ -133,13 +119,10 @@ public class HeapBitReversedCounter {
 		return new HeapBitReversedCounter(nonreversedCount, false);
 	}
 	
-	
 	/**
 	 * Increments the counter, then returns its pre-increment value.
 	 * <p>
 	 * Version: 1.2
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 * 
 	 * @return the count, prior to incrementing the counter.
 	 * 
@@ -151,14 +134,11 @@ public class HeapBitReversedCounter {
 		increment();
 		return ret;
 	}
-	
-	
+
 	/**
 	 * Increments the counter, then returns the new count.
 	 * <p>
 	 * Version: 1.2
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @return the new count, after incrementing the counter.
 	 * 
@@ -169,14 +149,11 @@ public class HeapBitReversedCounter {
 		increment();
 		return this.count;
 	}
-	
-	
+
 	/**
 	 * Decrements the counter, then returns its pre-decrement value. If the
 	 * counter is equal to zero when this method is called, its value
 	 * remains unchanged.
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 * 
 	 * @return the count, prior to decrementing the counter.
 	 */
@@ -185,14 +162,11 @@ public class HeapBitReversedCounter {
 		decrement();
 		return ret;
 	}
-	
-	
+
 	/**
 	 * Decrements the counter, then returns the new count. If the counter is
 	 * equal to zero when this method is called, its value remains
 	 * unchanged.
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @return the new count, after decrementing the counter.
 	 */
@@ -200,12 +174,9 @@ public class HeapBitReversedCounter {
 		decrement();
 		return this.count;
 	}
-	
-	
+
 	/**
 	 * Sets the counter to the specified bit-reversed value.
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @param count the bit-reversed value to set the counter to, which must
 	 *    be greater than or equal to 0.
@@ -220,12 +191,9 @@ public class HeapBitReversedCounter {
 		
 		privSet(count);
 	}
-	
-	
+
 	/**
 	 * Sets the counter to the specified non-bit-reversed value.
-	 * <p>
-	 * JUnit Tests: SUCCEEDED.
 	 * 
 	 * @param nonreversedCount the non-bit-reversed value to set the counter
 	 *    to, which must be greater than or equal to 0.
@@ -241,11 +209,8 @@ public class HeapBitReversedCounter {
 		privSetNonrev(nonreversedCount);
 	}
 	
-	
 	/**
 	 * Resets this counter to its initial value of 0.
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 */
 	public void reset() {
 		this.count = 0;
@@ -256,12 +221,9 @@ public class HeapBitReversedCounter {
 		this.bitWidth = 0;
 	}
 	
-	
 	/**
 	 * Returns the counter's current value, which is a heap bit-reversed
 	 * count.
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 * 
 	 * @return the counter's current value, which is a heap bit-reversed
 	 *    count.
@@ -269,12 +231,9 @@ public class HeapBitReversedCounter {
 	public int get() {
 		return this.count;
 	}
-	
-	
+
 	/**
 	 * Returns the counter's current non-bit-reversed value.
-	 * <p>
-	 * JUnit Test: SUCCEEDED.
 	 * 
 	 * @return the counter's current non-bit-reversed value.
 	 */
@@ -317,7 +276,6 @@ public class HeapBitReversedCounter {
 		this.count = this.rowCount + this.rowSz - 1;
 	}
 	
-	
 	/**
 	 * Decrements the heap bit-reversed counter. If the counter is equal to
 	 * zero when this method is called, its value remains unchanged.
@@ -354,8 +312,7 @@ public class HeapBitReversedCounter {
 		this.nonrevCount--;
 		this.count = this.rowCount + this.rowSz - 1;
 	}
-	
-	
+
 	/**
 	 * Sets the counter to the specified bit-reversed value.
 	 * <p>
@@ -378,8 +335,7 @@ public class HeapBitReversedCounter {
 				this.bitWidth);
 		this.nonrevCount = this.nonrevRowCount + this.rowSz - 1;
 	}
-	
-	
+
 	/**
 	 * Sets the counter to the specified non-bit-reversed value.
 	 * 
@@ -400,5 +356,4 @@ public class HeapBitReversedCounter {
 				this.bitWidth);
 		this.count = this.rowCount + this.rowSz - 1;
 	}
-
 }
